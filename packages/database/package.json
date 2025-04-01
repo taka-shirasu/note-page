@@ -1,0 +1,17 @@
+{
+  "name": "note-page-database",
+  "version": "1.0.0",
+  "description": "Database layer for note-page application",
+  "main": "index.js",
+  "scripts": {
+    "generate": "prisma generate",
+    "push": "prisma db push",
+    "studio": "prisma studio"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.10.2"
+  },
+  "devDependencies": {
+    "prisma": "^5.10.2"
+  }
+} 

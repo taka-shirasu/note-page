@@ -1,0 +1,138 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-rgb: 255, 255, 255;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
+}
+
+.ProseMirror {
+  min-height: 100vh;
+  padding: 0;
+  outline: none;
+  font-size: 16px;
+  line-height: 0.8 !important;
+}
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  color: #adb5bd;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.ProseMirror h1 {
+  font-size: 2em;
+  font-weight: 700;
+  margin: 0.8em 0 0.4em;
+  color: #111;
+}
+
+.ProseMirror h2 {
+  font-size: 1.5em;
+  font-weight: 600;
+  margin: 0.8em 0 0.4em;
+  color: #111;
+}
+
+.ProseMirror h3 {
+  font-size: 1.25em;
+  font-weight: 600;
+  margin: 0.8em 0 0.4em;
+  color: #111;
+}
+
+.ProseMirror ul,
+.ProseMirror ol {
+  padding-left: 1.5em;
+  margin: 0.8em 0;
+  color: #111;
+}
+
+.ProseMirror ul {
+  list-style: disc;
+  color: #111;
+}
+
+.ProseMirror ol {
+  list-style: decimal;
+  color: #111;
+}
+
+.ProseMirror li {
+  color: #111;
+}
+
+.ProseMirror blockquote {
+  border-left: 3px solid #e9ecef;
+  padding-left: 1rem;
+  margin: 0.8em 0;
+  color: #6c757d;
+}
+
+.ProseMirror code {
+  background-color: #f8f9fa;
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+  font-size: 0.9em;
+}
+
+.ProseMirror pre {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 4px;
+  margin: 0.8em 0;
+  overflow-x: auto;
+  font-size: 0.9em;
+}
+
+.ProseMirror hr {
+  border: none;
+  border-top: 2px solid #e9ecef;
+  margin: 1.5em 0;
+}
+
+.ProseMirror p {
+  margin: 0.3em 0 !important;
+}
+
+.ProseMirror a {
+  color: #3182ce;
+  text-decoration: none;
+}
+
+.ProseMirror a:hover {
+  text-decoration: underline;
+}
+
+.ProseMirror strong {
+  font-weight: 600;
+  color: #111;
+}
+
+.ProseMirror em {
+  font-style: italic;
+}
+
+.ProseMirror ul li::marker {
+  color: #111 !important;
+}
+
+.ProseMirror ol li::marker {
+  color: #111 !important;
+}
+
+/* Remove old markdown editor styles */
+.w-md-editor,
+.w-md-editor-text-pre > code,
+.w-md-editor-text-input {
+  display: none;
+}

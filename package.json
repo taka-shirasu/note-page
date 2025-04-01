@@ -1,0 +1,12 @@
+{
+  "name": "note-page",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "dev": "npm run dev --workspaces",
+    "generate": "npm run generate --workspace=packages/database"
+  }
+} 
