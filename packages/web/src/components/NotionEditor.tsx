@@ -42,16 +42,19 @@ const NotionEditor = () => {
       timeout: 20000
     });
 
-    // Add connection event listeners
+    // Add connection event listeners with more detailed logging
     newSocket.on('connect', () => {
       console.log('Client: Connected to server with ID:', newSocket.id);
       console.log('Client: User ID:', userId);
       console.log('Client: Transport:', newSocket.io.engine.transport.name);
+      console.log('Client: Server URL:', serverUrl);
     });
 
     newSocket.on('connect_error', (error) => {
       console.error('Client: Connection error:', error);
       console.log('Client: Attempted connection with User ID:', userId);
+      console.log('Client: Attempted connection to URL:', serverUrl);
+      console.log('Client: Transport:', newSocket.io.engine?.transport?.name);
     });
 
     newSocket.on('disconnect', (reason) => {
