@@ -1,127 +1,120 @@
 # Note Page Server
 
-This package provides the real-time server implementation for the Note Page application using Express and Socket.IO.
+[![Node.js CI](https://github.com/yourusername/note-page/actions/workflows/node.js.yml/badge.svg)](https://github.com/yourusername/note-page/actions/workflows/node.js.yml)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
-## Overview
+Real-time server implementation for the Note Page application using Express and Socket.IO.
 
-The server package implements a real-time communication system that enables synchronized note-taking across multiple clients. It uses:
-- Express.js for the HTTP server
-- Socket.IO for real-time bidirectional communication
+## 🚀 Features
+
+- Express.js HTTP server
+- Socket.IO for real-time communication
 - Prisma Client for database operations
-- CORS for cross-origin resource sharing
+- CORS support
+- TypeScript for type safety
+- Comprehensive error handling
+- Detailed logging
 
-## Prerequisites
-
-- Node.js (v14 or higher)
-- MongoDB instance (configured in the database package)
-- Environment variables set up (see Configuration section)
-
-## Installation
+## 📦 Installation
 
 ```bash
 npm install
 ```
 
-## Configuration
+## ⚙️ Configuration
 
-Create a `.env` file in the root of this package with the following content:
+1. Copy `.env.example` to `.env`:
+   ```env
+   PORT=3001
+   DATABASE_URL=mongodb://localhost:27017/note-page
+   CORS_ORIGINS=http://localhost:3000,https://your-domain.com
+   ```
 
-```env
-PORT=3001
+2. Update the values according to your environment
+
+## 🛠️ Scripts
+
+- `npm start`: Start the server
+- `npm run dev`: Start with hot-reload
+- `npm run build`: Build TypeScript code
+- `npm test`: Run tests
+- `npm run lint`: Run ESLint
+
+## 🔌 Socket.IO Events
+
+### Client to Server
+- `message`: Note content updates
+- `disconnect`: Client disconnection
+
+### Server to Client
+- `content`: Broadcast updates
+- `error`: Error messages
+
+## 🧪 Testing
+
+Run the test suite:
+```bash
+npm test
 ```
 
-The server will default to port 3001 if not specified in the environment variables.
+## 📝 API Documentation
 
-## Available Scripts
+### Health Check
+```http
+GET /health
+```
 
-- `npm start`: Start the server using ts-node
-- `npm run dev`: Start the server in development mode with hot-reload
-- `npm run build`: Build the TypeScript code
+Response:
+```json
+{
+  "status": "ok",
+  "timestamp": "2024-04-02T12:00:00.000Z",
+  "uptime": 1234.56,
+  "memoryUsage": {
+    "rss": 123456,
+    "heapTotal": 123456,
+    "heapUsed": 123456,
+    "external": 123456
+  },
+  "database": "connected"
+}
+```
 
-## Server Architecture
+## 🔒 Security
 
-### Socket.IO Events
+- CORS is configured to allow specific origins
+- Input validation for all requests
+- Rate limiting for socket connections
+- Proper error handling
 
-The server implements the following Socket.IO events:
+## 🤝 Contributing
 
-#### Client to Server
-- `message`: Receives note content updates from clients
-- `disconnect`: Handles client disconnection
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Open a Pull Request
 
-#### Server to Client
-- `content`: Broadcasts note content updates to all connected clients
-- `error`: Sends error messages to clients
+## 📄 License
 
-### Database Integration
-
-The server integrates with the database package to:
-- Load initial note content on server startup
-- Save note updates to the database
-- Retrieve user-specific notes on connection
-
-### CORS Configuration
-
-CORS is configured to allow connections from:
-- Origin: `http://localhost:3000`
-- Methods: GET, POST
-- Credentials: Enabled
+This project is licensed under the MIT License - see the [LICENSE](../../LICENSE) file for details.
 
 ## Development
 
-1. Start the development server:
+1. Start development server:
    ```bash
    npm run dev
    ```
 
-2. The server will:
-   - Connect to the MongoDB database
-   - Start the Socket.IO server
-   - Enable CORS for the frontend
-   - Listen for client connections
-
-3. Monitor the console for:
-   - Database connection status
-   - Client connections/disconnections
+2. Monitor console for:
+   - Database connections
+   - Client connections
    - Real-time updates
    - Error messages
 
 ## Dependencies
 
-### Main Dependencies
-- `express`: Web server framework
-- `socket.io`: Real-time bidirectional communication
-- `cors`: Cross-origin resource sharing
-- `@prisma/client`: Database client
-
-### Development Dependencies
-- `typescript`: TypeScript compiler
-- `ts-node`: TypeScript execution engine
-- `ts-node-dev`: Development server with hot-reload
-- `nodemon`: File system watcher
-- Various TypeScript type definitions
-
-## Error Handling
-
-The server implements comprehensive error handling for:
-- Database connection issues
-- Socket connection errors
-- Message processing errors
-- Client disconnections
-
-## Logging
-
-The server provides detailed logging for:
-- Server startup
-- Database connections
-- Client connections/disconnections
-- Message processing
-- Error conditions
-
-## Contributing
-
-When making changes to the server:
-1. Ensure all TypeScript types are properly defined
-2. Test the Socket.IO events
-3. Verify database operations
-4. Check error handling
-5. Run the development server to test changes 
+- `express`: Web server
+- `socket.io`: Real-time communication
+- `cors`: Cross-origin support
+- `@prisma/client`: Database client 

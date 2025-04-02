@@ -1,140 +1,112 @@
 # Note Page Web Application
 
-This package provides the frontend implementation for the Note Page application using Next.js 14 with App Router.
+[![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-20232A?style=flat&logo=react&logoColor=61DAFB)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
-## Overview
+Frontend implementation using Next.js 14 with App Router.
 
-The web application is a modern, real-time note-taking platform built with:
+## 🚀 Features
+
 - Next.js 14 with App Router
-- React 18
-- TipTap for rich text editing
-- Socket.IO for real-time synchronization
-- TailwindCSS for styling
+- React 18 with hooks
+- TipTap rich text editor
+- Socket.IO real-time sync
+- TailwindCSS styling
 - Markdown support
+- Dark mode
+- Responsive design
 
-## Prerequisites
-
-- Node.js (v18 or higher)
-- npm or yarn package manager
-- Socket.IO server running (see server package)
-
-## Installation
+## 📦 Installation
 
 ```bash
 npm install
 ```
 
-## Available Scripts
+## ⚙️ Configuration
 
-- `npm run dev`: Start the development server
-- `npm run build`: Build the production application
-- `npm start`: Start the production server
-- `npm run lint`: Run ESLint for code linting
+1. Copy `.env.example` to `.env`:
+   ```env
+   NEXT_PUBLIC_SERVER_URL=http://localhost:3001
+   ```
 
-## Project Structure
+2. Update the values according to your environment
+
+## 🛠️ Scripts
+
+- `npm run dev`: Start development server
+- `npm run build`: Build production app
+- `npm start`: Start production server
+- `npm run lint`: Run ESLint
+- `npm test`: Run tests
+
+## 📁 Project Structure
 
 ```
 src/
-├── app/           # Next.js App Router pages and layouts
-├── components/    # Reusable React components
+├── app/           # Next.js App Router
+│   ├── layout.tsx # Root layout
+│   └── page.tsx   # Home page
+├── components/    # React components
+│   ├── Editor/    # Editor components
+│   └── UI/        # UI components
 └── public/        # Static assets
 ```
 
-## Features
+## 🎨 Styling
 
-### Rich Text Editor
-- Powered by TipTap with extensions for:
-  - Blockquotes
-  - Bullet lists
-  - Code blocks
-  - Headings
-  - Horizontal rules
-  - Ordered lists
-  - Placeholder text
-
-### Real-time Synchronization
-- Socket.IO client integration
-- Automatic content synchronization across clients
-- Real-time updates without page refresh
-
-### Markdown Support
-- Markdown preview using `@uiw/react-markdown-preview`
-- Markdown editor using `@uiw/react-md-editor`
-- Sanitized markdown rendering with `rehype-sanitize`
-
-### Styling
-- TailwindCSS for utility-first styling
+The application uses TailwindCSS with custom configuration:
 - Typography plugin for markdown content
 - Dark mode support
-- Custom font configuration (Inter)
+- Custom font family (Inter)
+- Responsive design utilities
+
+## 🧪 Testing
+
+Run the test suite:
+```bash
+npm test
+```
+
+## 📝 Documentation
+
+### Components
+
+#### Editor
+- `NotionEditor`: Main editor component
+- `Toolbar`: Editor toolbar
+- `MarkdownPreview`: Markdown preview component
+
+#### UI
+- `ThemeToggle`: Dark/light mode toggle
+- `Button`: Reusable button component
+- `Input`: Form input component
+
+## 🔒 Security
+
+- Environment variables are properly managed
+- Input validation for all forms
+- XSS protection
+- CSRF protection
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](../../LICENSE) file for details.
 
 ## Dependencies
 
-### Main Dependencies
 - `next`: Next.js framework
 - `react`: React library
-- `@tiptap/*`: Rich text editor components
+- `@tiptap/*`: Rich text editor
 - `socket.io-client`: Real-time communication
 - `@uiw/react-markdown-preview`: Markdown preview
 - `@uiw/react-md-editor`: Markdown editor
-- `tailwindcss`: Utility-first CSS framework
-
-### Development Dependencies
-- `typescript`: TypeScript compiler
-- `eslint`: Code linting
-- `postcss`: CSS processing
-- `autoprefixer`: CSS vendor prefixing
-- Various TypeScript type definitions
-
-## Configuration
-
-### TailwindCSS
-The application uses TailwindCSS with custom configuration for:
-- Typography styling
-- Dark mode support
-- Custom font family
-- Responsive design
-
-### Next.js
-- App Router enabled
-- TypeScript support
-- ESLint integration
-- Custom font optimization
-
-## Development
-
-1. Start the development server:
-   ```bash
-   npm run dev
-   ```
-
-2. The application will be available at:
-   - http://localhost:3000
-
-3. Development features:
-   - Hot module replacement
-   - TypeScript type checking
-   - ESLint code validation
-   - TailwindCSS JIT compilation
-
-## Production Build
-
-1. Build the application:
-   ```bash
-   npm run build
-   ```
-
-2. Start the production server:
-   ```bash
-   npm start
-   ```
-
-## Contributing
-
-When making changes to the web application:
-1. Follow the existing code style
-2. Ensure TypeScript types are properly defined
-3. Test the real-time synchronization
-4. Verify markdown rendering
-5. Check responsive design
-6. Run the linter before committing
+- `tailwindcss`: CSS framework

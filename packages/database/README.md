@@ -1,38 +1,45 @@
 # Note Page Database
 
-This package provides the database layer for the Note Page application using Prisma ORM with MongoDB.
+[![Prisma](https://img.shields.io/badge/Prisma-3982CE?style=flat&logo=Prisma&logoColor=white)](https://www.prisma.io/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=flat&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
-## Overview
+Database layer using Prisma ORM with MongoDB.
 
-The database package uses Prisma as an ORM (Object-Relational Mapping) tool to interact with a MongoDB database. It provides type-safe database operations and a clean API for managing notes in the application.
+## 🚀 Features
 
-## Prerequisites
+- Prisma ORM for type-safe database operations
+- MongoDB integration
+- Automatic schema migrations
+- Database seeding support
+- TypeScript support
+- Environment-based configuration
 
-- Node.js (v14 or higher)
-- MongoDB instance
-- Environment variables set up (see Configuration section)
-
-## Installation
+## 📦 Installation
 
 ```bash
 npm install
 ```
 
-## Configuration
+## ⚙️ Configuration
 
-Create a `.env` file in the root of this package with the following content:
+1. Copy `.env.example` to `.env`:
+   ```env
+   DATABASE_URL="mongodb://localhost:27017/note-page"
+   ```
 
-```env
-DATABASE_URL="mongodb://your-mongodb-connection-string"
-```
+2. Update the connection string with your MongoDB credentials
 
-Replace `your-mongodb-connection-string` with your actual MongoDB connection string.
+## 🛠️ Scripts
 
-## Database Schema
+- `npm run generate`: Generate Prisma Client
+- `npm run push`: Push schema changes
+- `npm run studio`: Launch Prisma Studio
+- `npm run seed`: Seed the database
+- `npm run migrate`: Run migrations
 
-The database currently has one main model:
+## 📝 Schema
 
-### Note Model
 ```prisma
 model Note {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
@@ -45,49 +52,36 @@ model Note {
 }
 ```
 
-Fields:
+### Fields
 - `id`: Unique identifier (MongoDB ObjectId)
 - `userId`: Unique identifier for the user
 - `notes`: The content of the notes
 - `createdAt`: Timestamp of when the note was created
 - `updatedAt`: Timestamp of when the note was last updated
 
-## Available Scripts
+## 🧪 Testing
 
-- `npm run generate`: Generate Prisma Client
-- `npm run push`: Push schema changes to the database
-- `npm run studio`: Launch Prisma Studio for database visualization
-
-## Usage
-
-1. First, ensure your MongoDB instance is running and accessible
-2. Set up your environment variables in `.env`
-3. Generate the Prisma client:
-   ```bash
-   npm run generate
-   ```
-4. Push the schema to your database:
-   ```bash
-   npm run push
-   ```
-
-## Development
-
-To visualize and manage your database, you can use Prisma Studio:
+Run the test suite:
 ```bash
-npm run studio
+npm test
 ```
 
-This will open a web interface where you can view and edit your database records.
+## 🔒 Security
 
-## Dependencies
+- Environment variables for sensitive data
+- Input validation
+- Proper error handling
+- Database connection pooling
+- Query optimization
 
-- `@prisma/client`: Prisma's database client
-- `prisma`: Prisma ORM development dependencies
+## 🤝 Contributing
 
-## Contributing
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Open a Pull Request
 
-When making changes to the database schema:
-1. Modify the `schema.prisma` file
-2. Run `npm run generate` to update the Prisma client
-3. Run `npm run push` to apply changes to the database 
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](../../LICENSE) file for details. 
