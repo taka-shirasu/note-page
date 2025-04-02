@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Socket.IO Connection Test</title>
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+</head>
+<body>
+    <h2>Testing connection from note.jotme.io to socket.jotme.io</h2>
+    <div id="status">Connecting...</div>
+    <pre id="logs"></pre>
+
+    <script>
+        function log(message) {
+            console.log(message);
+            const logs = document.getElementById('logs');
+            logs.textContent = new Date().toISOString() + ': ' + message + '\n' + logs.textContent;
+        }
+
+        const socket = io('https://socket.jotme.io', {
+            path: '/socket.io/',
+            transports: ['websocket', 'polling'],
+            auth: {
+                userId: 'test-user-' + Date.now()
+            }
+        });
+
+        socket.on('connect', () => {
+            log('Connected successfully!');
+            log('Transport: ' + socket.io.engine.transport.name);
+            document.getElementById('status').textContent = 'Connected! Using: ' + socket.io.engine.transport.name;
+        });
+
+        socket.on('connect_error', (error) => {
+            log('Connection error: ' + error);
+            document.getElementById('status').textContent = 'Connection Error: ' + error;
+        });
+
+        socket.on('disconnect', (reason) => {
+            log('Disconnected: ' + reason);
+            document.getElementById('status').textContent = 'Disconnected: ' + reason;
+        });
+    </script>
+</body>
+</html> 

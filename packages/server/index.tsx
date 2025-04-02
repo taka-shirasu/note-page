@@ -23,6 +23,19 @@ const app: Express = express();
 // Create HTTP server
 const httpServer = createServer(app);
 
+// Trust proxy headers
+app.set('trust proxy', true);
+
+// Add middleware to log all incoming requests
+app.use((req, res, next) => {
+  console.log('\n=== Incoming Request ===');
+  console.log('Method:', req.method);
+  console.log('URL:', req.url);
+  console.log('Headers:', req.headers);
+  console.log('========================\n');
+  next();
+});
+
 // Define types for socket data
 interface ServerToClientEvents {
   content: (content: string) => void;
@@ -50,31 +63,133 @@ const io = new SocketIOServer<
   SocketData
 >(httpServer, {
   cors: {
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST"],
-    credentials: true
+    origin: ["https://note.jotme.io", "http://localhost:3000"],
+    methods: ["GET", "POST", "OPTIONS", "PUT", "PATCH", "DELETE"],
+    credentials: true,
+    allowedHeaders: ["*"]
   },
   path: '/socket.io/',
-  transports: ['websocket', 'polling']
+  transports: ['polling', 'websocket'],
+  allowUpgrades: true,
+  pingTimeout: 60000,
+  pingInterval: 25000,
+  upgradeTimeout: 10000,
+  allowEIO3: true
 });
 
 // Add server-level event listeners
 io.engine.on('connection_error', (err) => {
-  console.error('Server: Connection error:', err);
+  console.error('\n=== Socket.IO Connection Error ===');
+  console.error('Error:', err);
+  console.error('Request headers:', err.req?.headers);
+  console.error('Request URL:', err.req?.url);
+  console.error('Request method:', err.req?.method);
+  console.error('Error code:', err.code);
+  console.error('Error message:', err.message);
+  console.error('X-Forwarded-Proto:', err.req?.headers['x-forwarded-proto']);
+  console.error('X-Forwarded-For:', err.req?.headers['x-forwarded-for']);
+  console.error('Host:', err.req?.headers.host);
+  console.error('============================\n');
 });
 
+// Add connection state logging
+io.engine.on('connection', (socket) => {
+  console.log('\n=== New Socket.IO Connection ===');
+  console.log('Socket ID:', socket.id);
+  console.log('Transport:', socket.transport.name);
+  console.log('Headers:', socket.request.headers);
+  console.log('X-Forwarded-Proto:', socket.request.headers['x-forwarded-proto']);
+  console.log('X-Forwarded-For:', socket.request.headers['x-forwarded-for']);
+  console.log('==========================\n');
+});
+
+// Add upgrade logging
 io.engine.on('upgrade', (req, socket, head) => {
-  console.log('Server: Socket upgrade request received');
+  console.log('\n=== Socket Upgrade Request ===');
+  console.log('Headers:', req.headers);
+  console.log('URL:', req.url);
+  console.log('Method:', req.method);
+  console.log('Host:', req.headers.host);
+  console.log('Origin:', req.headers.origin);
+  console.log('X-Forwarded-Proto:', req.headers['x-forwarded-proto']);
+  console.log('X-Forwarded-For:', req.headers['x-forwarded-for']);
+  console.log('==========================\n');
+});
+
+// Add transport error logging
+io.engine.on('transport_error', (err) => {
+  console.error('\n=== Socket.IO Transport Error ===');
+  console.error('Error:', err);
+  console.error('Error code:', err.code);
+  console.error('Error message:', err.message);
+  console.error('==========================\n');
+});
+
+// Add upgrade error logging
+io.engine.on('upgrade_error', (err) => {
+  console.error('\n=== Socket.IO Upgrade Error ===');
+  console.error('Error:', err);
+  console.error('Error code:', err.code);
+  console.error('Error message:', err.message);
+  console.error('==========================\n');
 });
 
 // Enable CORS for all routes
 app.use(cors({
-  origin: "http://localhost:3000",
-  credentials: true
+  origin: ["https://note.jotme.io", "http://localhost:3000"],
+  methods: ["GET", "POST", "OPTIONS", "PUT", "PATCH", "DELETE"],
+  credentials: true,
+  allowedHeaders: ["*"]
 }));
 
 // Parse JSON request bodies
 app.use(express.json());
+
+// Add basic root endpoint with CORS headers
+app.get('/', (req, res) => {
+  console.log('Health check request received at /', req.headers);
+  const origin = req.headers.origin;
+  if (origin === "https://note.jotme.io" || origin === "http://localhost:3000") {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.json({ status: 'Server is running' });
+});
+
+// Add health check endpoint with CORS headers
+app.get('/health', async (req, res) => {
+  console.log('\n=== Health Check Request ===');
+  console.log('Time:', new Date().toISOString());
+  console.log('Headers:', req.headers);
+  console.log('Client IP:', req.ip);
+  
+  try {
+    // Check database connection
+    await prisma.note.findFirst();
+    console.log('Database health check: OK');
+    
+    res.header("Access-Control-Allow-Origin", "*");
+    res.status(200).json({ 
+      status: 'ok', 
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      memoryUsage: process.memoryUsage(),
+      database: 'connected'
+    });
+  } catch (error) {
+    console.error('Database health check failed:', error);
+    res.status(500).json({
+      status: 'error',
+      error: 'Database connection failed',
+      timestamp: new Date().toISOString()
+    });
+  }
+  
+  console.log('===========================\n');
+});
+
+// Add OPTIONS handler for preflight requests
+app.options('*', cors());
 
 // Global state variables
 let connectedClients: number = 0;
@@ -100,7 +215,7 @@ async function loadInitialContent() {
 loadInitialContent();
 
 // Socket.IO connection handling
-io.on('connection', async (socket: Socket<ClientToServerEvents, ServerToClientEvents>) => {
+(io as any).on('connection', async (socket: Socket<ClientToServerEvents, ServerToClientEvents>) => {
   // Get userId from authentication
   const userId = socket.handshake.auth.userId;
   socket.data.userId = userId;
@@ -210,12 +325,42 @@ io.on('connection', async (socket: Socket<ClientToServerEvents, ServerToClientEv
 // Start the server with more detailed logging
 const PORT: number = process.env.PORT ? parseInt(process.env.PORT) : 3001;
 
+// Graceful shutdown handling
+const gracefulShutdown = async (signal: string) => {
+  console.log(`\n=== Received ${signal} signal ===`);
+  console.log('Starting graceful shutdown...');
+  
+  try {
+    // Close Socket.IO server
+    console.log('Closing Socket.IO server...');
+    io.close();
+    
+    // Close HTTP server
+    console.log('Closing HTTP server...');
+    httpServer.close();
+    
+    // Close database connection
+    console.log('Closing database connection...');
+    await prisma.$disconnect();
+    
+    console.log('Graceful shutdown complete');
+    process.exit(0);
+  } catch (error) {
+    console.error('Error during shutdown:', error);
+    process.exit(1);
+  }
+};
+
+// Handle process signals
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+
 // Test database connection before starting server
 testDatabaseConnection().then(() => {
   httpServer.listen(PORT, () => {
     console.log('\n=== Server Started ===');
     console.log(`Server running on port ${PORT}`);
-    console.log(`CORS origin: http://localhost:3000`);
+    console.log(`CORS origin: * (allowing all origins)`);
     console.log(`Socket.IO path: /socket.io/`);
     console.log(`Available transports: websocket, polling`);
     console.log('=====================\n');

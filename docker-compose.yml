@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  server:
+    build:
+      context: ./packages/server
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - DATABASE_URL=mongodb://mongodb:27017/notepage
+      - NODE_ENV=production
+    depends_on:
+      - mongodb
+    networks:
+      - notepage-network
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - notepage-network
+
+volumes:
+  mongodb_data:
+
+networks:
+  notepage-network:
+    driver: bridge 

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Socket.IO Test</title>
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+    <style>
+        #logs { 
+            background: #f4f4f4; 
+            padding: 10px; 
+            height: 200px; 
+            overflow: auto; 
+        }
+        .controls {
+            margin: 10px 0;
+        }
+        button {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Socket.IO Test</h1>
+    <div id="status">Connecting...</div>
+    <div class="controls">
+        <button onclick="connect('websocket')">Try WebSocket</button>
+        <button onclick="connect('polling')">Try Polling</button>
+        <button onclick="connect(['websocket', 'polling'])">Try Both</button>
+    </div>
+    <pre id="logs"></pre>
+    <script>
+        function log(message) {
+            console.log(message);
+            const logs = document.getElementById('logs');
+            logs.textContent = new Date().toISOString() + ': ' + message + '\n' + logs.textContent;
+        }
+
+        let socket;
+
+        function connect(transport) {
+            if (socket) {
+                log('Closing existing connection...');
+                socket.close();
+            }
+
+            log(`Attempting connection with transport: ${JSON.stringify(transport)}`);
+            
+            socket = io('http://54.95.31.109:3001', {
+                transports: Array.isArray(transport) ? transport : [transport],
+                reconnection: true,
+                reconnectionAttempts: 5,
+                timeout: 60000,
+                auth: {
+                    userId: 'test-user-' + Date.now()
+                }
+            });
+
+            socket.io.on("error", (error) => {
+                log('Transport error: ' + error);
+            });
+
+            socket.io.on("reconnect_attempt", (attempt) => {
+                log('Reconnection attempt: ' + attempt);
+            });
+
+            socket.io.on("reconnect_failed", () => {
+                log('Reconnection failed');
+            });
+
+            socket.on('connect', () => {
+                log('Connected to server');
+                log('Active transport: ' + socket.io.engine.transport.name);
+                document.getElementById('status').textContent = 'Connected! Using: ' + socket.io.engine.transport.name;
+            });
+
+            socket.on('connect_error', (error) => {
+                log('Connection error: ' + error);
+                document.getElementById('status').textContent = 'Connection Error: ' + error;
+            });
+
+            socket.on('disconnect', (reason) => {
+                log('Disconnected: ' + reason);
+                document.getElementById('status').textContent = 'Disconnected: ' + reason;
+            });
+
+            socket.on('error', (error) => {
+                log('Socket error: ' + error);
+                document.getElementById('status').textContent = 'Socket Error: ' + error;
+            });
+
+            socket.on('content', (content) => {
+                log('Received content: ' + content);
+            });
+        }
+
+        // Initial connection with both transports
+        connect(['websocket', 'polling']);
+    </script>
+</body>
+</html> 

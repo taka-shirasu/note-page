@@ -33,15 +33,20 @@ const NotionEditor = () => {
     console.log('Client: Component mounted with User ID:', userId);
     
     // Initialize socket connection
-    const newSocket = io('http://localhost:3001', {
+    const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3001';
+    const newSocket = io(serverUrl, {
       path: '/socket.io/',
-      auth: { userId }
+      auth: { userId },
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000,
+      timeout: 20000
     });
 
     // Add connection event listeners
     newSocket.on('connect', () => {
       console.log('Client: Connected to server with ID:', newSocket.id);
       console.log('Client: User ID:', userId);
+      console.log('Client: Transport:', newSocket.io.engine.transport.name);
     });
 
     newSocket.on('connect_error', (error) => {
