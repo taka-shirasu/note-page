@@ -4,7 +4,7 @@ import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
 import { useState, useEffect } from 'react';
-import { io } from 'socket.io-client';
+import { io, ManagerOptions, SocketOptions } from 'socket.io-client';
 import { v4 as uuidv4 } from 'uuid';
 
 const NotionEditor = () => {
@@ -34,13 +34,22 @@ const NotionEditor = () => {
     
     // Initialize socket connection
     const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3001';
-    const newSocket = io(serverUrl, {
+    console.log('Client: Protocol of current page:', window.location.protocol);
+    
+    // Ensure we use WSS when on HTTPS
+    const secureServerUrl = window.location.protocol === 'https:' 
+      ? serverUrl.replace('http://', 'https://') 
+      : serverUrl;
+    
+    console.log('Client: Using server URL:', secureServerUrl);
+    
+    const newSocket = io(secureServerUrl, {
       path: '/socket.io/',
       auth: { userId },
       reconnectionAttempts: 5,
       reconnectionDelay: 1000,
       timeout: 20000
-    });
+    } as Partial<ManagerOptions & SocketOptions>);
 
     // Add connection event listeners with more detailed logging
     newSocket.on('connect', () => {
@@ -48,6 +57,7 @@ const NotionEditor = () => {
       console.log('Client: User ID:', userId);
       console.log('Client: Transport:', newSocket.io.engine.transport.name);
       console.log('Client: Server URL:', serverUrl);
+      console.log('Client: Page Protocol:', window.location.protocol);
     });
 
     newSocket.on('connect_error', (error) => {
