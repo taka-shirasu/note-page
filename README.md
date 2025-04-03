@@ -1,4 +1,4 @@
-# Note Page
+# Notion Clone
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
@@ -93,5 +93,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 - Create an issue for bug reports or feature requests
-- Join our [Discord community](https://discord.gg/your-discord) for help and discussion
-- Check out our [documentation](https://note-page-docs.vercel.app) for detailed guides 
+- Join our [Slack community](https://join.slack.com/t/jotmecommunity/shared_invite/zt-32yy5urh1-yD9ab~6Rhd361F6YLX7xNA) for help and discussion
+- Check out our website [JotMe](https://jotme.io/)
